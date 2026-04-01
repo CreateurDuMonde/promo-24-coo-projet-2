@@ -55,8 +55,23 @@ public class Stock<T extends Duck> {
      * Attention à la signature de retour : elle doit conserver le type générique T.
      */
     public List<T> remove(DuckType type, int count) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Stock.remove()");
+        List<T> removed = new ArrayList<>();
+
+        for (int i = 0; i < items.size() && removed.size() < count; i++) {
+            T duck = items.get(i);
+            if (duck.getType() == type) {
+                removed.add(duck);
+            }
+        }
+
+        if (removed.size() < count) {
+            throw new IllegalStateException(
+                    "Pas assez de canards de type " + type + " dans le stock"
+            );
+        }
+
+        items.removeAll(removed);
+        return removed;
     }
 
     /**
@@ -65,8 +80,13 @@ public class Stock<T extends Duck> {
      * @param type le type à compter
      */
     public int count(DuckType type) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Stock.count()");
+        int c = 0;
+        for (T duck : items) {
+            if (duck.getType() == type) {
+                c++;
+            }
+        }
+        return c;
     }
 
     /**
@@ -76,8 +96,13 @@ public class Stock<T extends Duck> {
      * Conseil : appelez isDefective() plutôt que de comparer le score manuellement.
      */
     public int countDefective() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Stock.countDefective()");
+        int c = 0;
+        for (T duck : items) {
+            if (duck.isDefective()) {
+                c++;
+            }
+        }
+        return c;
     }
 
     /**
@@ -88,7 +113,19 @@ public class Stock<T extends Duck> {
      * Tous les types doivent apparaître dans la map (avec 0 si absent).
      */
     public Map<DuckType, Integer> countByType() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Stock.countByType()");
+        Map<DuckType, Integer> map = new java.util.EnumMap<>(DuckType.class);
+
+        // Initialiser tous les types à 0
+        for (DuckType type : DuckType.values()) {
+            map.put(type, 0);
+        }
+
+        // Une seule passe
+        for (T duck : items) {
+            DuckType type = duck.getType();
+            map.put(type, map.get(type) + 1);
+        }
+
+        return map;
     }
 }
