@@ -5,6 +5,7 @@ import duckcorp.order.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -25,34 +26,41 @@ public class OrderBook {
      * Ajoute une commande et maintient la liste triée par turnsRemaining croissant.
      * En cas d'égalité de délai, triez par id pour garantir un ordre stable.
      *
-     * TODO : ajoutez l'ordre puis triez la liste.
      * En cas d'égalité de délai, garantissez un ordre stable et reproductible.
      */
     public void addOrder(Order order) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : OrderBook.addOrder()");
+        if (order == null) return;
+        orders.add(order);
+        // Tri par turnsRemaining croissant, puis par id pour un ordre stable
+        orders.sort(
+                Comparator.comparingInt(Order::getTurnsRemaining)
+                        .thenComparingInt(o -> Integer.parseInt(o.getId()))
+        );
     }
 
     /**
      * Retourne la liste des commandes en attente (status == PENDING),
      * dans l'ordre de tri courant.
      *
-     * TODO : parcourez orders, ne retournez que celles avec status PENDING.
      */
     public List<Order> getPendingOrders() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : OrderBook.getPendingOrders()");
+        List<Order> pending = new ArrayList<>();
+        for (Order o : orders) {
+            if (o.getStatus() == OrderStatus.PENDING) {
+                pending.add(o);
+            }
+        }
+        return pending;
     }
 
     /**
      * Retourne la commande PENDING la plus urgente (premier élément trié),
      * ou null si aucune commande n'est en attente.
      *
-     * TODO : utilisez getPendingOrders() et retournez le premier élément.
      */
     public Order getMostUrgent() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : OrderBook.getMostUrgent()");
+        List<Order> pending = getPendingOrders();
+        return pending.isEmpty() ? null : pending.get(0);
     }
 
     /** Retourne toutes les commandes (fourni). */

@@ -9,8 +9,6 @@ import java.util.Comparator;
  * Utilisé par Factory.fulfillOrder() pour expédier les canards
  * les moins bons en premier et conserver les meilleurs en stock.
  *
- * TODO (Bonus 2) :
- *   - Implémentez compare(Duck a, Duck b)
  *
  * Attention : la soustraction directe des scores peut produire un dépassement
  * entier dans des cas limites. Préférez une comparaison sûre.
@@ -25,7 +23,6 @@ public class DuckComparator implements Comparator<Duck> {
      */
     @Override
     public int compare(Duck a, Duck b) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : DuckComparator.compare()");
+        return Integer.compare(a.getQualityScore(), b.getQualityScore());
     }
 }
