@@ -19,3 +19,20 @@ La signature `canBeFulfilled(Stock<Duck> stock)` est plus restrictive car elle n
 Le choix de retourner une liste non modifiable via `Collections.unmodifiableList()` est fait pour protéger l'intégrité de la collection interne de machines. Si on retournait la liste interne directement, les clients de la classe Factory pourraient ajouter, supprimer ou modifier les éléments de la liste, ce qui pourrait entraîner des comportements imprévisibles ou des erreurs dans le fonctionnement de la Factory.
 
 Cependant, même avec une liste non modifiable, les machines elles-mêmes peuvent toujours être modifiées via leurs méthodes publiques. Par exemple, si une machine a une méthode `degrade()`, un client pourrait appeler cette méthode sur une machine obtenue de la liste, ce qui modifierait l'état de la machine. La liste est protégée contre les modifications structurelles (ajout/suppression), mais les objets qu'elle contient peuvent toujours être modifiés.
+
+#### Question ouverte (dans REPONSES.md) : réécrivez getMostProduced() en une seule expression utilisant l'API Stream : produced.entrySet().stream(), max(), Comparator.comparingInt(), Optional. Comparez avec votre implémentation impérative : laquelle est plus lisible ? plus efficace ?
+
+Voici une réécriture de `getMostProduced()` en utilisant l'API Stream :
+
+```java
+    produced.entrySet().stream()
+            .max(Comparator.comparingInt(Map.Entry::getValue))
+            .filter(e -> e.getValue() > 0)
+            .map(Map.Entry::getKey)
+            .orElse(null); 
+```
+
+
+Comparée à une implémentation impérative, cette version utilisant les Streams est généralement plus concise et peut être considérée comme plus lisible pour ceux qui sont familiers avec les Streams. Elle exprime clairement l'intention de trouver l'entrée avec la valeur maximale, filtrer les résultats, et retourner la clé correspondante.
+
+
