@@ -23,22 +23,26 @@ import java.util.List;
 public class ConcurrentProductionStats extends ProductionStats {
 
     /**
-     * TODO : remplacez les Maps héritées par des Maps thread-safe,
      * puis initialisez chaque entrée à 0 pour tous les DuckType.
      */
     public ConcurrentProductionStats() {
         super();
-        // TODO
-        throw new UnsupportedOperationException("TODO : ConcurrentProductionStats()");
+        produced = new ConcurrentHashMap<>();
+        sold     = new ConcurrentHashMap<>();
+        for (DuckType t : DuckType.values()) {
+            produced.put(t, 0);
+            sold.put(t, 0);
+        }
     }
 
     /**
-     * TODO : surchargez recordProduction() pour incrémenter les compteurs
      * de façon atomique, sans risque de race condition.
      */
     @Override
     public void recordProduction(List<Duck> ducks) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : ConcurrentProductionStats.recordProduction()");
+        if (ducks == null) return;
+        for (Duck duck : ducks) {
+            produced.merge(duck.getType(), 1, Integer::sum);
+        }
     }
 }

@@ -41,8 +41,8 @@ public class ProductionQueue {
      * @return true si le canard a été ajouté, false si la file est pleine
      */
     public boolean enqueue(Duck duck) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : ProductionQueue.enqueue()");
+        if (duck == null) return false;
+        return queue.offer(duck);
     }
 
     /**
@@ -52,8 +52,7 @@ public class ProductionQueue {
      * @return le canard retiré, ou null si la file est vide
      */
     public Duck dequeue() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : ProductionQueue.dequeue()");
+        return queue.poll();
     }
 
     /**
@@ -63,8 +62,12 @@ public class ProductionQueue {
      * Conseil : utilisez queue.drainTo(list) puis ajoutez chaque canard au stock.
      */
     public List<Duck> drainToStock(Stock<Duck> stock) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : ProductionQueue.drainToStock()");
+        List<Duck> transferred = new ArrayList<>();
+        queue.drainTo(transferred);
+        for (Duck d : transferred) {
+            stock.add(d);
+        }
+        return transferred;
     }
 
     /** Retourne le nombre de canards actuellement dans la file (fourni). */
