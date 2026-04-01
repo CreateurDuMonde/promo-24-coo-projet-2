@@ -1,6 +1,7 @@
 package duckcorp;
 
 import duckcorp.duck.*;
+import duckcorp.order.Order;
 import duckcorp.stock.Stock;
 
 import java.util.List;
@@ -48,5 +49,34 @@ public class Main {
         // --- Vérification après suppression ---
         System.out.println("Total après remove: " + stock.total());
         System.out.println("MINI après remove: " + stock.count(DuckType.MINI));
+
+
+
+        // --- TEST ORDER ---
+        System.out.println("\n=== TEST ORDER ===");
+
+        // Création d'une commande
+        Order order = new Order(DuckType.MINI, 2, 50.0, 3);
+
+        // Test getTotalValue
+        System.out.println("Valeur totale: " + order.getTotalValue());
+
+        // Test canBeFulfilled
+        System.out.println("Peut être honorée ? " + order.canBeFulfilled(stock));
+
+        // Test fulfill
+        order.fulfill();
+        System.out.println("Statut après fulfill: " + order.getStatus());
+
+        // Nouvelle commande pour tester expiration
+        Order order2 = new Order(DuckType.LUXURY, 10, 100.0, 2);
+
+        System.out.println("\nCommande 2 avant tick: " + order2.getStatus());
+
+        // Simule les tours
+        order2.tick();
+        order2.tick();
+
+        System.out.println("Commande 2 après tick: " + order2.getStatus());
     }
 }

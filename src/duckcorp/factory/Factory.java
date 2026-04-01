@@ -77,8 +77,12 @@ public class Factory {
      * @return true si l'achat a réussi, false si budget insuffisant
      */
     public boolean buyMachine(Machine machine) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Factory.buyMachine()");
+        if (budget >= machine.getPurchaseCost()) {
+            budget -= machine.getPurchaseCost();
+            machines.add(machine);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -88,8 +92,12 @@ public class Factory {
      * @return true si la maintenance a réussi, false si budget insuffisant
      */
     public boolean maintainMachine(Machine machine) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Factory.maintainMachine()");
+        if (budget >= machine.getMaintenanceCost()) {
+            budget -= machine.getMaintenanceCost();
+            machine.maintain();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -103,8 +111,16 @@ public class Factory {
      * @return la liste de tous les canards produits ce tour
      */
     public List<Duck> runProduction() {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Factory.runProduction()");
+        List<Duck> produced = new ArrayList<>();
+        for (Machine m : machines) {
+            for (int i = 0; i < m.getCapacity(); i++) {
+                Duck duck = m.produceDuck();
+                stock.add(duck);
+                produced.add(duck);
+            }
+            stats.recordProduction(produced);
+        }
+        return produced;
     }
 
     /**
@@ -122,8 +138,29 @@ public class Factory {
      * @return true si la commande a été honorée, false sinon
      */
     public boolean fulfillOrder(Order order) {
-        // TODO
-        throw new UnsupportedOperationException("TODO : Factory.fulfillOrder()");
+        if (!order.canBeFulfilled(stock)) return false;
+
+        // Retirer les canards du stock par qualité croissante
+        List<Duck> toSend = stock.remove(order.getDuckType(), order.getQuantity());
+
+        // Calcul de la qualité moyenne
+        double avgQuality = toSend.stream()
+                .mapToInt(Duck::getQualityScore)
+                .average()
+                .orElse(0.0);
+
+        // Bonus réputation
+        if (avgQuality >= 70) reputation = Math.min(100, reputation + 3);
+        else if (avgQuality >= 50) reputation = Math.min(100, reputation + 1);
+
+        // Crédite le budget
+        budget += order.getTotalValue();
+
+        // Marque la commande comme honorée et met à jour stats
+        order.fulfill();
+        stats.recordSale(order);
+
+        return true;
     }
 
     // --- TODO (Bonus 1) ---
